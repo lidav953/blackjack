@@ -71,7 +71,7 @@ class Player:
         self.chips = starting_chips
     
     def __str__(self):
-        return 'You currently have ' + str(self.chips) + ' chips.'
+        return 'You now have ' + str(self.chips) + ' chips.'
 
     def bet(self):
         while True:
@@ -93,6 +93,9 @@ class Player:
     def lose(self, bet):
         self.chips -= bet
 
+    def get_chips(self):
+        return self.chips
+
 def initialize_player():
     #Sets up a player with the number of starting chips that they want.
     while True:
@@ -105,40 +108,44 @@ def initialize_player():
 
 def keep_playing(player):
     #Asks the player if they want to keep playing.
-    print(player.__str__())
-    playing = input('Do you want to keep playing? Say \'y\' or \'yes\' for yes, and anything else for no')
-    if playing.lower() == 'y' or playing.lower() == 'yes':
-        return True
+    if player.get_chips() == 0:
+        print('You have no chips left.')
+    else:
+        print(player.__str__())
+        playing = input('\nDo you want to keep playing? Say \'y\' or \'yes\' for yes, and anything else for no: ')
+        if playing.lower() == 'y' or playing.lower() == 'yes':
+            return True
     return False 
-        
 
-"""
-def player_blackjack(player, bet):
-    #Player hand value is 21 in first two cards, so s/he wins 1.5x the bet
-    print("You got blackjack.")
-    player.win(bet, true)
+def player_turn(hand, deck):
+        #Goes through the player's turn
+        while True: #continue player's turn until the player stands or hand value >= 21
+            while True: #get player's action
+                action = input('\nHit(h) or Stand(s)? ')
+                if action.lower() == 'h':
+                    hand.add_card(deck.deal())
+                    print('Your current hand is:')
+                    print(hand.__str__())
+                    print('Current hand value is ' + str(hand.value()) + '.')
+                    break
+                elif action.lower() == 's':
+                    return
+                else:
+                    print('Please enter \'h\' or \'s\'')
 
-def player_bust(player, bet):
-    #Player busts, so s/he loses
-    print("You busted.")
-    player.lose(bet)
-
-def player_win(player, bet):
-    #Player's hand value is greater than dealer's, so player wins
-    print("You won.")
-    player.win(bet)
-
-def dealer_bust(player, bet):
-    #Dealer busts, so player wins
-    print("Dealer busted.")
-    player.win(bet)
-
-def dealer_win(player, bet):
-    #Dealer's hand value is greater than player's, so player loses
-    print("You lost.")
-    player.lose(bet)
+            if hand.value() == 21:
+                print('Your hand value is 21, so you automatically stand.')
+                return
+            elif hand.value() > 21:
+                return
     
-def push(player):
-    #Dealer and player have same hand value, so tie
-    print("Push")
-"""
+def dealer_turn(hand, deck):
+    #Goes through the dealer's turn
+    while hand.value() < 17:
+        print('The dealer\'s current hand value is ' + str(hand.value()) + '.')
+        print('Dealer gets another card.')
+        input('\nPress any key to continue.')
+        hand.add_card(deck.deal())
+        print('\nThe dealer\'s current hand is:')
+        print(hand.__str__())
+    return

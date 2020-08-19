@@ -20,67 +20,55 @@ def play_blackjack():
 
         print('\nYour hand is:')
         print(player_hand.__str__())
+        print('Current hand value is ' + str(player_hand.value()) + '.')
 
         if player_hand.value() == 21: #player blackjack
             print('You have a blackjack.')
-            print('The dealer\'s hand is:')
+            print('\nThe dealer\'s hand is:')
             print(dealer_hand.__str__())
             if dealer_hand.value() == 21:
-                print('The dealer also has blackjack, so you pushed.')
+                print('\nThe dealer also has blackjack, so you pushed.')
             else:
-                print('The dealer doesn\'t have blackjack, so you win.')
+                print('\nThe dealer doesn\'t have blackjack, so you win.')
                 player.win(bet, True)
             playing = keep_playing(player)
-            break
+            continue
         
-        print('One card in the dealer\'s hand is:')
+        print('\nOne card in the dealer\'s hand is:')
         dealer_hand.print_dealer_card()
 
-        
-        player_stop = False
-        while not player_stop:
-            while True:
-                action = input('Hit(h) or Stand(s)?')
-                if action.lower() == 'h':
-                    player_hand.add_card(deck.deal())
-                    print('Your current hand is')
-                    print(player_hand.__str__())
-                    print('Current hand value is ' + player_hand.value())
-                    break
-                elif action.lower() == 's':
-                    player_stop = True
-                    break
-                else:
-                    print('Please enter \'h\' or \'s\'')
-
-            if player_hand.value() == 21:
-                print('Your hand value is 21, so you automatically stand.')
-                player_stop = True
-            elif player_hand.value() > 21:
-                player_stop = True
+        player_turn(player_hand, deck)
         
         if player_hand.value() > 21: #player bust
+            print('You busted.')
             player.lose(bet)
             playing = keep_playing(player)
-            break
+            continue
 
         print('The dealer\'s hand is:')
         print(dealer_hand.__str__())
+        print('The dealer\'s hand value is ' + str(dealer_hand.value()) + '.')
 
-        while dealer_hand.value() < 17:
-            dealer_hand.add_card(deck.deal())
-            print('The dealer\'s current hand is:')
-            print(dealer_hand.__str__())
+        dealer_turn(dealer_hand, deck)
         
         if dealer_hand.value() > 21: #dealer bust
-        
-        elif dealer_hand.value() > player_hand.value(): #dealer wins
-        
-        elif dealer_hand.value() < player_hand.value(): #player wins
-        
-        else: #push
-                
+            print('The dealer busted, so you win.')
+            player.win(bet)
+        elif dealer_hand.value() == player_hand.value(): #push
+            print('Both hands have value ' + str(player_hand.value()))
+            print('It\'s a push')
+        else:
+            print('Your hand\'s value is ' + str(player_hand.value()))
+            print('The dealer\'s hand\'s value is ' + str(dealer_hand.value()))
+            if dealer_hand.value() > player_hand.value(): #dealer wins
+                print('The dealer wins.')
+                player.lose(bet)
+            else: #player wins
+                print('You win.')
+                player.win(bet)
+        playing = keep_playing(player)
 
+    print('\nThanks for playing!')
 
 if __name__ == "__main__":
    play_blackjack()
