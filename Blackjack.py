@@ -47,7 +47,6 @@ def play_blackjack():
 
         print('The dealer\'s hand is:')
         print(dealer_hand.__str__())
-        print('The dealer\'s hand value is ' + str(dealer_hand.value()) + '.')
 
         dealer_turn(dealer_hand, deck)
         
